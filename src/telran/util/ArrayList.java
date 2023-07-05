@@ -56,62 +56,10 @@ public class ArrayList<T> implements List<T> {
 	private void reallocate() {
 		Arrays.copyOf(array, array.length * 2);		
 	}
-	@Override
-	public boolean remove(Object pattern) {
-		int index = indexOf(pattern);
-		boolean res = false;
-		if(index >= 0) {
-			res = true;
-			remove(index);
-		}
-		return res;
-	}
-
-	@Override
-	public T[] toArray(T[] ar) {
-		T[] res = ar.length < size ? Arrays.copyOf(ar, size) : ar;
-		int index = 0;
-		for(T obj: this) {
-			res[index++] = obj;
-		}
-		if(res.length > size) {
-			res[size] = null;
-		}
-		return res;
-	}
-
-	@Override
-	public boolean removeIf(Predicate<T> predicate) {
-		Iterator<T> it = iterator();
-		int oldSize = size;
-		while(it.hasNext()) {
-			if(predicate.test(it.next())) {
-				it.remove();
-			}
-		}
-		return oldSize > size;
-	}
 
 	@Override
 	public int size() {
 		return size;
-	}
-
-	@Override
-	public boolean addAll(Collection<T> collection) {
-		for(T obj: collection) {
-			add(obj);
-		}
-		return collection.size() > 0;
-	}
-
-	@Override
-	public boolean removeAll(Collection<T> collection) {
-		int oldSize = size;
-		for(T obj: collection) {
-			remove(obj);
-		}
-		return oldSize > size;
 	}
 
 	@Override
