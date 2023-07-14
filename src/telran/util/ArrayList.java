@@ -10,33 +10,33 @@ public class ArrayList<T> implements List<T> {
 	private T[] array;
 	private int size = 0;
 	
-	private class ArrayListIterator implements Iterator<T>{
+	private class ArrayListIterator implements Iterator<T> {
 		int currentIndex = 0;
-		boolean isNext = false;
-		@Override
-		public boolean hasNext() {
-			
-			return currentIndex < size;
-		}
+		boolean flNext = false;
+			@Override
+			public boolean hasNext() {
+				
+				return currentIndex < size;
+			}
 
-		@Override
-		public T next() {
-			if(!hasNext()) {
-				throw new NoSuchElementException();
+			@Override
+			public T next() {
+				if(!hasNext()) {
+					throw new NoSuchElementException();
+				}
+				flNext = true;
+				return array[currentIndex++];
 			}
-			isNext = true;
-			return array[currentIndex++];
-		}
-		@Override
-		public void remove() {
-			if(!isNext) {
-				throw new IllegalStateException();
+			@Override
+			public void remove() {
+				if(!flNext) {
+					throw new IllegalStateException();
+				}
+				ArrayList.this.remove(--currentIndex);
+				flNext = false;
 			}
-			ArrayList.this.remove(--currentIndex);
-			isNext = false;
+			
 		}
-		
-	}
 	
 	public ArrayList(int capacity) {
 		array = (T[]) new Object[capacity];
@@ -54,40 +54,69 @@ public class ArrayList<T> implements List<T> {
 	}
 
 	private void reallocate() {
-		Arrays.copyOf(array, array.length * 2);		
+		array = Arrays.copyOf(array, array.length * 2);
+		
 	}
+	
+   @Override
+   public boolean removeIf(Predicate<T> predicate) {
+	   int oldSize = size;
+		int indexDest = 0;
+		for(int indexSrc = 0; indexSrc < oldSize; indexSrc++) {
+			if (predicate.test(array[indexSrc])) {
+				size--;
+			} else {
+				array[indexDest++] = array[indexSrc];
+			}
+		}
+		for (int i = size; i < oldSize; i++) {
+			array[i] = null;
+		}
+		return oldSize > size;
+	  
+   }
+	
+
+	
 
 	@Override
 	public int size() {
+		
 		return size;
 	}
+
+	
+
+	
 
 	@Override
 	public Iterator<T> iterator() {
 		
-		return  new ArrayListIterator();
+		return new ArrayListIterator();
 	}
 
 	@Override
 	public void add(int index, T obj) {
-		indexValidatuion(index, true);
-		if(size == array.length) {
+		indexValidation(index, true);
+		if (size == array.length) {
 			reallocate();
 		}
 		System.arraycopy(array, index, array, index + 1, size - index);
 		array[index] = obj;
 		size++;
 		
+
 	}
 
 	@Override
 	public T get(int index) {
-		indexValidatuion(index, false);
+		indexValidation(index, false);
 		return array[index];
 	}
 
 	@Override
 	public T set(int index, T obj) {
+		
 		T res = get(index);
 		array[index] = obj;
 		return res;
@@ -95,7 +124,7 @@ public class ArrayList<T> implements List<T> {
 
 	@Override
 	public T remove(int index) {
-		indexValidatuion(index, false);
+		indexValidation(index, false);
 		T res = array[index];
 		size--;
 		System.arraycopy(array, 0, array, 0, index);
@@ -104,32 +133,15 @@ public class ArrayList<T> implements List<T> {
 		return res;
 	}
 
-	private void indexValidatuion(int index, boolean sizeIncluzive) {
-		
-		int bounder = sizeIncluzive ? size : size -1; 
-		if(index < 0 || index > bounder) {
-			throw new IndexOutOfBoundsException(index);
-		}
-		
-	}
-	@Override
-	public int indexOf(Object pattern) {
-		
-		return indexOf(Predicate.isEqual(pattern));
-	}
-
-	@Override
-	public int lastIndexOf(Object pattern) {
-		
-		return lastIndexOf(Predicate.isEqual(pattern));
-	}
+	
+	
 
 	@Override
 	public int indexOf(Predicate<T> predicate) {
 		int res = -1;
 		int index = 0;
-		while(index < size && res == -1) {
-			if(predicate.test(array[index])) {
+		while (index < size && res == -1) {
+			if (predicate.test(array[index])) {
 				res = index;
 			}
 			index++;
@@ -141,8 +153,8 @@ public class ArrayList<T> implements List<T> {
 	public int lastIndexOf(Predicate<T> predicate) {
 		int res = -1;
 		int index = size - 1;
-		while(index >= 0 && res == -1) {
-			if(predicate.test(array[index])) {
+		while (index >= 0 && res == -1) {
+			if (predicate.test(array[index])) {
 				res = index;
 			}
 			index--;
