@@ -161,5 +161,15 @@ public class ArrayList<T> implements List<T> {
 		}
 		return res;
 	}
+	@Override
+	public boolean equals(Object obj) {
+		return listEqualsTo(obj);
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException{
+		// TODO Fix this method to return Shallow Copy of this collection
+		return super.clone();
+	}
 
 }

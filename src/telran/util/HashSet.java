@@ -165,4 +165,15 @@ public class HashSet<T> implements Set<T> {
 		}
 		return res;
 	}
+	@Override
+	public boolean equals(Object obj) {
+		return setEqualsTo(obj);
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException{
+		// TODO Fix this method to return Shallow Copy of this collection
+		return super.clone();
+	}
+
 }

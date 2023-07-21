@@ -35,6 +35,9 @@ public interface List<T> extends Collection<T> {
 		if(index < 0 || index > bounder) {
 			throw new IndexOutOfBoundsException(index);
 		}
-		
+	}
+	default boolean listEqualsTo(Object other) {
+		// TODO Checks other is List having the equal elements in the same order (using iteration)
+		return false;
 	}
 }
