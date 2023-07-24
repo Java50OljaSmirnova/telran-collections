@@ -33,18 +33,21 @@ public class LinearRecursion {
 		long res = 0;
 		if(b > 0) {
 			if(a < 0 && range % 2 != 0) {
-				res = counter(-a, count);
+				res += counter(counter(-a, count, range), count, range-1);
 			} else {
-				res = counter(a, count) + counter(counter(a, count), count);
+				res += counter(counter(a, count, range), count, range-1);
 			}
 		}
 		return res;
 	}
-	private static int counter(int a, int count) {
+	private static int counter(int a, int count, int range) {
 		if(count == 0) {
 			return 0;
 		}
-		return count < 0 ? counter(a, count + 1) + a : counter(a, count - 1) + a;
+		if(range == 0) {
+			return a;
+		}
+		return count < 0 ? counter(a, count + 1, range) + a : counter(a, count - 1, range) + a;
 	}
 	public static void displayArray(int[] ar) {
 		displayArray(0, ar, false);
@@ -91,16 +94,25 @@ public class LinearRecursion {
 		return x > 0 ? square(x - 1) + x + x - 1 : square(x + 1) - x - (x + 1);
 	}
 	public static boolean isSubstring(String string, String subStr) {
-		//TODO
-		// returns true if a given 'substr' is indeed the //substring of a given `string` 
+		 
+		return isSubstring(string, subStr, 0, 0);
+	}
+	private static boolean isSubstring(String string, String subStr, int strIndex, int subIndex) {
+		int lengthStr = string.length();
+		int lengthSub = subStr.length();
+		boolean res = false;
+		if(strIndex > lengthStr - lengthSub) {
+			return false;
+		}
 
-		/*
-		  Challenges:
-		 1. To apply only following methods of the class String: charAt(int ind);  
-		String substring(int ind); 
-		 int length(); 
-		2. No cycles;
-		*/ 
-		return false;
+		if(string.charAt(strIndex) == subStr.charAt(subIndex)){
+			String str = string.substring(strIndex, strIndex + lengthSub);
+			if(str.equals(subStr)) {
+				res = true;
+			} else {
+				isSubstring(string, subStr, strIndex + 1, subIndex);
+			}
+		}
+		return res ? true : isSubstring(string, subStr, strIndex + 1, subIndex);
 	}
 }
