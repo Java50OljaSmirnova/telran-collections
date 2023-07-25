@@ -20,35 +20,22 @@ public class LinearRecursion {
 		if(b < 0) {
 			throw new IllegalArgumentException("degree cannot be a negative");
 		}
-		if(b == 0) {
-			return 0;
-		}
-		int range = b - 1;
-		int count = a;
-		return b == 1 ? a : pow(a, b-1, range, count);
-	}
-	
-	
-	private static long pow(int a, int b, int range, int count) {
-		long res = 0;
+		long res = 1;
 		if(b > 0) {
-			if(a < 0 && range % 2 != 0) {
-				res += counter(counter(-a, count, range), count, range-1);
-			} else {
-				res += counter(counter(a, count, range), count, range-1);
-			}
+			res = multiply(a, pow(a, b-1));
 		}
 		return res;
 	}
-	private static int counter(int a, int count, int range) {
-		if(count == 0) {
-			return 0;
+	
+	
+	private static int multiply(int a, long b) {
+		int res = 0;
+		if(b != 0) {
+			res = b < 0 ? multiply(-a, -b): a + multiply(a, b - 1);
 		}
-		if(range == 0) {
-			return a;
-		}
-		return count < 0 ? counter(a, count + 1, range) + a : counter(a, count - 1, range) + a;
+		return res;
 	}
+
 	public static void displayArray(int[] ar) {
 		displayArray(0, ar, false);
 	}
@@ -88,31 +75,28 @@ public class LinearRecursion {
 		}	
 	}
 	public static int square(int x) {
-		if( x == 0) {
-			return 0;
+		int res = 0;
+		if(x != 0) {
+			res = x < 0 ? square(-x) : x + x - 1 + square(x - 1);
 		}
-		return x > 0 ? square(x - 1) + x + x - 1 : square(x + 1) - x - (x + 1);
+		return res;
 	}
 	public static boolean isSubstring(String string, String subStr) {
 		 
-		return isSubstring(string, subStr, 0, 0);
-	}
-	private static boolean isSubstring(String string, String subStr, int strIndex, int subIndex) {
-		int lengthStr = string.length();
-		int lengthSub = subStr.length();
 		boolean res = false;
-		if(strIndex > lengthStr - lengthSub) {
-			return false;
+		if(string.length() >= subStr.length()) {
+			res = isEqual(string, subStr) ? true : isSubstring(string.substring(1), subStr);
 		}
-
-		if(string.charAt(strIndex) == subStr.charAt(subIndex)){
-			String str = string.substring(strIndex, strIndex + lengthSub);
-			if(str.equals(subStr)) {
-				res = true;
-			} else {
-				isSubstring(string, subStr, strIndex + 1, subIndex);
-			}
-		}
-		return res ? true : isSubstring(string, subStr, strIndex + 1, subIndex);
+		return res;
 	}
+	private static boolean isEqual(String str, String substr) {
+		boolean res = false;
+		if(substr.length() == 0) {
+			res = true;
+		}else if (str.charAt(0) == substr.charAt(0)) {
+			res = isEqual(str.substring(1), substr.substring(1));
+		}
+		return res;
+	}
+	
 }
